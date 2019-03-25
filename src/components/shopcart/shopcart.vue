@@ -28,12 +28,12 @@
         </div>
       </div>
       <transition name="fold">
-        <div class="shopcart-list" v-show="listShow" >
+        <div class="shopcart-list" v-show="fold" >
           <div class="list-header">
             <h1 class="title">购物车</h1>
             <span class="empty" @click="empty">清空</span>
           </div>
-          <div class="list-content" ref="list-content">
+          <div class="list-content" ref="listContent">
             <ul>
               <li class="food" v-for="food in selectFoods" :key="food.id">
                 <span class="name">{{food.name}}</span>
@@ -50,7 +50,7 @@
       </transition>
     </div>
     <transition name="fade">
-      <div class="list-mask" v-show="listShow" @click="hideList"></div>
+      <div class="list-mask" v-show="fold" @click="hideList"></div>
     </transition>
   </div>
 </template>
@@ -104,7 +104,7 @@
           }
         ],
         dropBalls: [],
-        fold: true
+        fold: false
       }
     },
     computed: {
@@ -138,8 +138,8 @@
         } else {
           return 'enough'
         }
-      },
-      listShow: {
+      }
+      /* listShow: {
         get: function() {
           return this.fold
         },
@@ -163,6 +163,27 @@
           }
           return show
         }
+      } */
+    },
+    watch: {
+      totalCount: function () {
+        if (!this.totalCount) {
+          this.fold = false
+          return false
+        }
+      },
+      fold: function (totalCount) {
+        let show = this.fold
+        if (show) {
+          if (!this.scroll) {
+            this.scroll = new BScroll(this.$refs.listContent, {
+              click: true
+            })
+          } else {
+              this.scroll.refresh()
+          }
+        }
+        return show
       }
     },
     methods: {
