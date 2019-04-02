@@ -30,7 +30,7 @@
                     <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol v-on:cart-add="_drop" :food="food"></cartcontrol>
+                    <cartcontrol @add="_drop" :food="food"></cartcontrol>
                   </div>
                 </div>
               </li>
@@ -43,7 +43,7 @@
                 :min-price="seller.minPrice">
       </shopcart>
     </div>
-    <food :food="selectedFood" ref="food"></food>
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
@@ -108,20 +108,23 @@
     },
     methods: {
       selectMenu(index, event) {
-        // if (!event._constructed) {
-        //   return
-        // }
+        if (!event._constructed) {
+          return
+        }
         let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook')
         let el = foodList[index]
         this.foodsScroll.scrollToElement(el, 300)
         console.log(index)
       },
       selectFood(food, event) {
-        // if (!event._constructed) {
-        //   return
-        // }
+        if (!event._constructed) {
+          return
+        }
         this.selectedFood = food
         this.$refs.food.show()
+      },
+      addFood(target) {
+        this._drop(target)
       },
       _drop(target) {
         // 体验优化，异步执行下落动画
@@ -129,10 +132,10 @@
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
-          // click: true
+          click: true
         })
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-          // click: true
+          click: true,
           probeType: 3
         })
         this.foodsScroll.on('scroll', (pos) => {
@@ -154,11 +157,6 @@
       shopcart,
       cartcontrol,
       food
-    },
-    events: {
-      'cart.add'(target) {
-        this._drop(target)
-      }
     }
   }
 </script>

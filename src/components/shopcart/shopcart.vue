@@ -41,7 +41,7 @@
                   <span>￥{{food.price * food.count}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol v-on:cart-add="drop" :food="food"></cartcontrol>
+                  <cartcontrol @add="drop" :food="food"></cartcontrol>
                 </div>
               </li>
             </ul>
@@ -215,7 +215,7 @@
           }
         }
       },
-      enter(el) {
+      enter(el, done) {
         /* eslint-disable no-unused-vars */
         let rf = el.offsetHeight
         this.$nextTick(() => {
@@ -224,6 +224,7 @@
           let inner = el.getElementsByClassName('inner-hook')[0]
           inner.style.webkitTransform = 'translate3D(0, 0, 0)'
           inner.style.transform = 'translate3D(0, 0, 0)'
+          el.addEventListener('transitionend', done)
         })
       },
       afterEnter(el) {

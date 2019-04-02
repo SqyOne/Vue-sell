@@ -18,7 +18,7 @@
             <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
           </div>
           <div class="cartcontrol-wrapper">
-            <cartcontroll :food="food"></cartcontroll>
+            <cartcontrol @add="addFood" :food="food"></cartcontrol>
           </div>
           <transition name="fade">
             <div @click.stop.prevent="addFirst($event)" class="buy" v-show="!food.count || food.count === 0">加入购物车</div>
@@ -61,7 +61,7 @@
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
   import Vue from 'vue'
-  import cartcontroll from '../cartcontrol/cartcontrol'
+  import cartcontrol from '../cartcontrol/cartcontrol'
   import split from '../split/split'
   import ratingselect from '../ratingselect/ratingselect'
   import {formatDate} from '../../common/js/date'
@@ -107,12 +107,17 @@
       hide() {
         this.showFlag = false
       },
+      addFood(target) {
+        if (!event._constructed) {
+          return
+        }
+        this.$emit('add', target)
+      },
       addFirst(event) {
         if (!event._constructed) {
           return
         }
-        // this.$emit('cart.add', event.target)
-        // this.$emit('cart-add', event.target)
+        this.$emit('add', event.target)
         Vue.set(this.food, 'count', 1)
       },
       needShow(type, text) {
@@ -128,18 +133,16 @@
       select(type) {
         // console.log(type)
         this.selectType = type
-        /* this.$nextTick = (() => {
+         this.$nextTick(() => {
           this.scroll.refresh()
-        }) */
-        this.scroll.refresh()
+        })
       },
       toggle(mereContent) {
         // console.log(mereContent)
         this.onlyContent = mereContent
-        /* this.$nextTick = (() => {
+         this.$nextTick(() => {
           this.scroll.refresh()
-        }) */
-        this.scroll.refresh()
+        })
       }
     },
     filters: {
@@ -160,7 +163,7 @@
       }
     }, */
     components: {
-      cartcontroll,
+      cartcontrol,
       split,
       ratingselect
     }
@@ -180,9 +183,9 @@
     background #fff
     transform translate3d(0, 0, 0)
     &.move-enter-active, &.move-leave-active
-      transition all 0.2s liner
+      transition all 0.2s linear
       transform translate3d(0, 0, 0)
-    &.move-enter, &.move-leave-to
+    &.move-enter, &.move-leave-active
       transform translate3d(100%, 0, 0)
     .image-header
       position relative
