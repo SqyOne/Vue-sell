@@ -14,6 +14,7 @@ Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.config.productionTip = false
 const routes = [
+  {path: '/', component: goods},
   {path: '/seller', component: seller},
   {path: '/goods', component: goods},
   {path: '/ratings', component: ratings}
@@ -29,3 +30,9 @@ new Vue({
   template: '<App/>'
 }).$mount('#app')
 // router.push('/goods')
+/*
+new Vue({
+  el: '#app',
+  router,
+  render: h => h(App)
+}) */
